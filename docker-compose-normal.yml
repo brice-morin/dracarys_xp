@@ -1,0 +1,53 @@
+version: '3'
+services:
+  logger:
+    image: diversiot/logger
+    labels:
+      protected: "true"
+  gateway_0-0-0:
+    image: diversiot/gateway
+    labels:
+      protected: "true"
+    # build:
+    #   context: diversified\0-0-0
+    #   dockerfile: Dockerfile.medical-gateway
+    command: bash -c "socat pty,raw,echo=0,link=/dev/serial1 tcp:logger:5000,forever & while [ ! -e /dev/serial1 ]; do sleep 1; done; $$THINGML_CMD"
+    links:
+     - logger
+    privileged: true
+    cap_add:
+     - ALL
+     - NET_ADMIN
+     - NET_RAW
+  device_0-0-0: #FIXME: not sure if the ThingML app is really made so that devices can be scaled...?
+    image: diversiot/device
+    labels:
+      protected: "true"
+    deploy:
+      replicas: 1
+    # build:
+    #   context: diversified\0-0-0
+    #   dockerfile: Dockerfile.medical-device
+    command: bash -c "socat pty,raw,echo=0,link=/dev/serial1 tcp:logger:5000,forever & while [ ! -e /dev/serial1 ]; do sleep 1; done; $$THINGML_CMD"
+    links:
+     - logger
+    privileged: true
+    cap_add:
+     - ALL
+     - NET_ADMIN
+     - NET_RAW
+  cloud:
+    image: diversiot/cloud
+    labels:
+      protected: "true"    
+    # build:
+    #   context: diversified
+    #   dockerfile: Dockerfile.medical-cloud
+    command: bash -c "$$THINGML_CMD"
+    links:
+     - logger
+    privileged: true
+    cap_add:
+     - ALL
+     - NET_ADMIN
+     - NET_RAW
