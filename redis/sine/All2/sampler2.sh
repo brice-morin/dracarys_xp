@@ -31,9 +31,9 @@ while $alive; do
     fi
     for (( i=0; i<${#containers[@]}; i++ )); do
       container=${containers[i]}
-      (if docker exec -d $container stress --vm 16 --timeout ${sample}s --verbose ; then
+      (if docker exec -d $container stress --vm 2 --timeout ${sample}s --verbose ; then
         printf -v ts '%(%s)T' -1
-        echo "docker exec -d $container stress --vm 16 --timeout ${sample}s --verbose #$ts" >> sampler2.log
+        echo "docker exec -d $container stress --vm 2 --timeout ${sample}s --verbose #$ts" >> sampler2.log
         echo "$ts,${sample},${container}" >> sampler2.sig
       fi)&
 		done
