@@ -2,8 +2,8 @@
 alive=true
 function _term {
   alive=false
-  echo "Waiting 15sfor processes to terminate... Ctrl+C again to quit now."
-  sleep 15s
+  echo "Waiting 5sfor processes to terminate... Ctrl+C again to quit now."
+  sleep 5s
   for job in `jobs -p`
   do
     #echo $job
@@ -16,7 +16,7 @@ function _term {
 trap _term INT
 
 
-declare -a samples=(32.00 80.05 127.61 174.21 219.39 262.68 303.65 341.90 377.04 408.70 436.59 460.41 479.93 494.95 505.31 510.93 511.73 507.72 498.92 485.44 467.40 444.99 418.43 387.99 353.98 316.73 276.62 234.05 189.45 143.27 95.98 48.04)
+declare -a samples=(16.00 21.34 26.66 31.93 37.14 42.24 47.23 52.08 56.77 61.28 65.58 69.66 73.51 77.09 80.41 83.43 86.16 88.57 90.65 92.41 93.82 94.89 95.60 95.96 95.96 95.60 94.89 93.82 92.41 90.65 88.57 86.16 83.43 80.41 77.09 73.51 69.66 65.58 61.28 56.77 52.08 47.23 42.24 37.14 31.93 26.66 21.34)
 echo "--------" >> sampler2.log
 echo "--------" >> sampler2.sig
 while $alive; do
@@ -26,7 +26,7 @@ while $alive; do
     if [[ ${#containers[@]} -eq "0" ]]; then
         printf -v ts '%(%s)T' -1
         echo "_ #$ts" >> sampler2.log
-          sleep 15s
+          sleep 5s
       continue
     fi
     for (( i=0; i<${#containers[@]}; i++ )); do
@@ -37,6 +37,6 @@ while $alive; do
         echo "$ts,${sample},${container}" >> sampler2.sig
       fi)&
 		done
-      sleep 15s
+      sleep 5s
   done
 done
